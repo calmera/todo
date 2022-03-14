@@ -1,20 +1,24 @@
 package com.github.calmera.eda.todo;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.serializers.*;
+import io.confluent.kafka.streams.serdes.avro.GenericAvroDeserializer;
+import io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.Topology;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
+import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
 import org.springframework.kafka.config.StreamsBuilderFactoryBeanCustomizer;
 import org.springframework.lang.NonNull;
 
@@ -28,30 +32,31 @@ import static org.apache.kafka.streams.StreamsConfig.*;
 @EnableKafkaStreams
 public class KafkaConfig {
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
+    @Value(value = "${confluent_broker_endpoint}")
     private String bootstrapAddress;
+
+    private String schemaRegistryUrl;
 
     @Value(value = "${app.topics.todo.events}")
     private String todoEventTopic;
 
-    private final Deserializer<Object> avroDeserializer = new KafkaAvroDeserializer();
-    private final Serializer<Object> avroSerializer = new KafkaAvroSerializer();
-
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
-    KafkaStreamsConfiguration kStreamsConfig() {
+    KafkaStreamsConfiguration kStreamsConfig(Environment env) {
         Map<String, Object> props = new HashMap<>();
         props.put(APPLICATION_ID_CONFIG, "streams-app");
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         props.put(AbstractKafkaAvroSerDeConfig.AUTO_REGISTER_SCHEMAS, false);
         props.put(AbstractKafkaAvroSerDeConfig.USE_LATEST_VERSION, true);
+        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, env.getProperty("spring.kafka.properties.schema.registry.url"));
 
         return new KafkaStreamsConfiguration(props);
     }
 
     @Bean
-    KafkaStreamsInfrastructureCustomizer messageTopologyCustomizer() {
+    KafkaStreamsInfrastructureCustomizer messageTopologyCustomizer(KafkaAvroDeserializer avroDeserializer, KafkaAvroSerializer avroSerializer) {
         return new KafkaStreamsInfrastructureCustomizer() {
             @Override
             public void configureTopology(@NonNull Topology topology) {
@@ -63,10 +68,25 @@ public class KafkaConfig {
     }
 
     @Bean
-    StreamsBuilderFactoryBeanCustomizer streamsBuilderFactoryBeanCustomizer(
+    StreamsBuilderFactoryBeanConfigurer streamsBuilderFactoryBeanCustomizer(
             KafkaStreamsInfrastructureCustomizer customizer) {
         return (streamsBuilderFactoryBean) -> {
             streamsBuilderFactoryBean.setInfrastructureCustomizer(customizer);
         };
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    KafkaAvroSerializer avroSerializer() {
+        return new KafkaAvroSerializer();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    KafkaAvroDeserializer avroDeserializer() {
+        HashMap<String, String> props = new HashMap<>();
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+
+        return new KafkaAvroDeserializer(null, props);
     }
 }

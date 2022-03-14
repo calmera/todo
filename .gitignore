@@ -7,9 +7,9 @@ target/
 **/src/main/resources/application.properties
 
 ### Generated Avro files ###
-**/src/main/**/events/
-**/src/main/**/commands/
-**/src/main/**/state/
+**/src/main/java/**/events/
+**/src/main/java/**/commands/
+**/src/main/java/**/state/
 
 ### STS ###
 .apt_generated

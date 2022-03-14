@@ -1,0 +1,28 @@
+{
+  "namespace": "com.github.calmera.eda.todo.commands",
+  "name": "CreateTodo",
+  "type": "record",
+  "fields": [
+    {
+      "name": "key",
+      "type": "string"
+    },
+    {
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "name": "description",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "dueDate",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null
+    }
+  ]
+}

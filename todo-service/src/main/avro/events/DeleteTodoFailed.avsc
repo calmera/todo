@@ -1,0 +1,19 @@
+{
+  "namespace": "com.github.calmera.eda.todo.events",
+  "name": "DeleteTodoFailed",
+  "type": "record",
+  "fields": [
+    {
+      "name": "command",
+      "type": "com.github.calmera.eda.todo.commands.DeleteTodo"
+    },
+    {
+      "name": "error",
+      "type": "string"
+    },
+    {
+      "name": "reason",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "namespace": "com.github.calmera.eda.todo.events",
+  "name": "TodoDeleted",
+  "type": "record",
+  "fields": [
+    {
+      "name": "command",
+      "type": "com.github.calmera.eda.todo.commands.DeleteTodo"
+    }
+  ]
+}

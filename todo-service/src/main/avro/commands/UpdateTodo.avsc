@@ -1,0 +1,33 @@
+{
+  "namespace": "com.github.calmera.eda.todo.commands",
+  "name": "UpdateTodo",
+  "type": "record",
+  "fields": [
+    {
+      "name": "key",
+      "type": "string"
+    },
+    {
+      "name": "label",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "description",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "dueDate",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null
+    },
+    {
+      "name": "state",
+      "type": "com.github.calmera.eda.todo.state.TodoState"
+    }
+  ]
+}
