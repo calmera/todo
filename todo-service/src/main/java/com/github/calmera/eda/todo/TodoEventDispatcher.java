@@ -1,9 +1,8 @@
 package com.github.calmera.eda.todo;
 
-import com.github.calmera.eda.todo.commands.CreateTodo;
 import com.github.calmera.eda.todo.events.TodoCreated;
-import com.github.calmera.eda.todo.state.Todo;
-import com.github.calmera.eda.todo.state.TodoState;
+import com.github.calmera.eda.todo.logic.TodoWriter;
+import com.github.calmera.eda.todo.logic.kafka.KafkaTodoWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -16,18 +15,18 @@ import java.nio.charset.StandardCharsets;
 public class TodoEventDispatcher implements Processor<String, SpecificRecord, String, SpecificRecord> {
     private ProcessorContext<String, SpecificRecord> context;
 
+    private TodoWriter todoWriter;
+
     @Override
     public void init(ProcessorContext<String, SpecificRecord> context) {
         this.context = context;
+        this.todoWriter = new KafkaTodoWriter(context.getStateStore("todos"));
     }
 
     @Override
     public void process(Record<String, SpecificRecord> record) {
-        SpecificRecord result = null;
-
-        if (record.value() instanceof CreateTodo cmd) {
-            result = processCreateTodo(cmd);
-        }
+        // -- apply the record to the todoWriter
+        SpecificRecord result = this.todoWriter.apply(record.value());
 
         if (result != null) {
             Record<String, SpecificRecord> resultRecord = new Record<>(record.key(), result, System.currentTimeMillis());
@@ -35,11 +34,5 @@ public class TodoEventDispatcher implements Processor<String, SpecificRecord, St
 
             context.forward(resultRecord);
         }
-    }
-
-    protected SpecificRecord processCreateTodo(CreateTodo cmd) {
-        Todo todo = new Todo(cmd.getKey(), cmd.getLabel(), cmd.getDescription(), cmd.getDueDate(), TodoState.TODO);
-
-        return new TodoCreated(cmd, todo);
     }
 }

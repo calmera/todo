@@ -70,6 +70,9 @@
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
 				<version>1.11.0</version>
+				<configuration>
+					<stringType>String</stringType>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -82,12 +85,13 @@
 							<sourceDirectory>${project.basedir}/src/main/avro/events</sourceDirectory>
 
 							<imports>
-								<import>${project.basedir}/src/main/avro/state/TodoState.avsc</import>
 								<import>${project.basedir}/src/main/avro/state/Todo.avsc</import>
 
-								<import>${project.basedir}/src/main/avro/commands/CreateTodo.avsc</import>
-								<import>${project.basedir}/src/main/avro/commands/UpdateTodo.avsc</import>
 								<import>${project.basedir}/src/main/avro/commands/DeleteTodo.avsc</import>
+								<import>${project.basedir}/src/main/avro/commands/CreateTodo.avsc</import>
+								<import>${project.basedir}/src/main/avro/commands/FinishTodo.avsc</import>
+								<import>${project.basedir}/src/main/avro/commands/RestoreTodo.avsc</import>
+								<import>${project.basedir}/src/main/avro/commands/UpdateTodo.avsc</import>
 							</imports>
 
 							<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>

@@ -1,13 +1,11 @@
 package com.github.calmera.eda.todo;
 
 import io.confluent.kafka.serializers.*;
-import io.confluent.kafka.streams.serdes.avro.GenericAvroDeserializer;
-import io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer;
-import org.apache.avro.specific.SpecificRecord;
-import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.state.Stores;
+import org.apache.kafka.streams.state.internals.KeyValueStoreBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +17,6 @@ import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
 import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
-import org.springframework.kafka.config.StreamsBuilderFactoryBeanCustomizer;
 import org.springframework.lang.NonNull;
 
 import java.util.HashMap;
@@ -62,7 +59,10 @@ public class KafkaConfig {
             public void configureTopology(@NonNull Topology topology) {
                 topology.addSource("input", Serdes.String().deserializer(), avroDeserializer, todoEventTopic)
                         .addProcessor("dispatcher", TodoEventDispatcher::new, "input")
-                        .addSink("output", todoEventTopic, Serdes.String().serializer(), avroSerializer, "dispatcher");
+                        .addSink("output", todoEventTopic, Serdes.String().serializer(), avroSerializer, "dispatcher")
+                        .addStateStore(new KeyValueStoreBuilder<>(
+                                Stores.persistentKeyValueStore("todos"), Serdes.String(), Serdes.serdeFrom(avroSerializer, avroDeserializer), Time.SYSTEM
+                        ), "dispatcher");
             }
         };
     }

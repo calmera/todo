@@ -1,6 +1,0 @@
-{
-  "namespace": "com.github.calmera.eda.todo.state",
-  "name": "TodoState",
-  "type": "enum",
-  "symbols": ["TODO", "DONE"]
-}

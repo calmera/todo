@@ -24,10 +24,6 @@
         "logicalType": "timestamp-millis"
       }],
       "default": null
-    },
-    {
-      "name": "state",
-      "type": "com.github.calmera.eda.todo.state.TodoState"
     }
   ]
 }

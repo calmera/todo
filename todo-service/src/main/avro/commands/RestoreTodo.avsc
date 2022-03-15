@@ -1,0 +1,11 @@
+{
+  "namespace": "com.github.calmera.eda.todo.commands",
+  "name": "RestoreTodo",
+  "type": "record",
+  "fields": [
+    {
+      "name": "key",
+      "type": "string"
+    }
+  ]
+}

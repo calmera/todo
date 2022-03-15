@@ -8,9 +8,7 @@
 package com.github.calmera.eda.todo;
 
 import com.github.calmera.eda.TestUtils;
-import com.github.calmera.eda.todo.commands.CreateTodo;
-import com.github.calmera.eda.todo.commands.DeleteTodo;
-import com.github.calmera.eda.todo.commands.UpdateTodo;
+import com.github.calmera.eda.todo.commands.*;
 import com.github.calmera.eda.todo.events.*;
 import com.github.calmera.eda.todo.state.Todo;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
@@ -96,14 +94,15 @@ class KafkaStreamsIntegrationTest {
 		// registry
 		TestUtils.registerSchemas(mockSchemaRegistryClient, TOPIC_TODO_EVENTS,
 				CreateTodo.SCHEMA$,
-				CreateTodoFailed.SCHEMA$,
 				TodoCreated.SCHEMA$,
 				DeleteTodo.SCHEMA$,
-				DeleteTodoFailed.SCHEMA$,
 				TodoDeleted.SCHEMA$,
 				UpdateTodo.SCHEMA$,
-				UpdateTodoFailed.SCHEMA$,
-				TodoUpdated.SCHEMA$
+				TodoUpdated.SCHEMA$,
+				FinishTodo.SCHEMA$,
+				TodoFinished.SCHEMA$,
+				RestoreTodo.SCHEMA$,
+				TodoRestored.SCHEMA$
 		);
 
 		TestUtils.registerSchemas(mockSchemaRegistryClient, TOPIC_TODO_STATE, Todo.SCHEMA$);
