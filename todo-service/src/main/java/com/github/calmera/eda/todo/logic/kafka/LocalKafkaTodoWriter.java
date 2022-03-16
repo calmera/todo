@@ -7,10 +7,10 @@ import com.github.calmera.eda.todo.state.Todo;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class KafkaTodoWriter implements TodoWriter {
+public class LocalKafkaTodoWriter implements TodoWriter {
     private final KeyValueStore<String, Object> todos;
 
-    public KafkaTodoWriter(KeyValueStore<String, Object> stateStore) {
+    public LocalKafkaTodoWriter(KeyValueStore<String, Object> stateStore) {
         this.todos = stateStore;
     }
 

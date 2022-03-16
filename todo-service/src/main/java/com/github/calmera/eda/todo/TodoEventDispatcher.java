@@ -2,7 +2,7 @@ package com.github.calmera.eda.todo;
 
 import com.github.calmera.eda.todo.events.TodoCreated;
 import com.github.calmera.eda.todo.logic.TodoWriter;
-import com.github.calmera.eda.todo.logic.kafka.KafkaTodoWriter;
+import com.github.calmera.eda.todo.logic.kafka.LocalKafkaTodoWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -20,7 +20,7 @@ public class TodoEventDispatcher implements Processor<String, SpecificRecord, St
     @Override
     public void init(ProcessorContext<String, SpecificRecord> context) {
         this.context = context;
-        this.todoWriter = new KafkaTodoWriter(context.getStateStore("todos"));
+        this.todoWriter = new LocalKafkaTodoWriter(context.getStateStore("todos"));
     }
 
     @Override

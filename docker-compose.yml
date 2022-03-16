@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  todo-service:
+    image: "calmera/todo-service:latest"
+    ports:
+      - "15000:5000"
+      - "18000:8080"
+    environment:
+      confluent_api_key: ${confluent_api_key}
+      confluent_api_secret: ${confluent_api_secret}
+      confluent_broker_endpoint: ${confluent_broker_endpoint}
+      confluent_sr_endpoint: ${confluent_sr_endpoint}
+      confluent_sr_api_key: ${confluent_sr_api_key}
+      confluent_sr_api_secret: ${confluent_sr_api_secret}
+      spring.kafka.ssl.trustStoreLocation: ${ssl_trust_store}
+      confluent_ksql_endpoint: ${confluent_ksql_endpoint}
+      confluent_ksql_key: ${confluent_ksql_key}
+      confluent_ksql_secret: ${confluent_ksql_secret}
+      spring.kafka.schema.registry.url: ${confluent_sr_endpoint}

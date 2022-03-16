@@ -11,7 +11,11 @@
 	<groupId>com.github.calmera.eda.todo</groupId>
 	<artifactId>todo-service</artifactId>
 	<name>TodoService</name>
-	<description>A event-driven todo application</description>
+	<description>An event-driven todo application</description>
+
+	<properties>
+		<spring-boot.build-image.imageName>calmera/${project.artifactId}:latest</spring-boot.build-image.imageName>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -22,6 +26,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.10.5</version>
 		</dependency>
 
 		<dependency>
