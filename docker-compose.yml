@@ -4,7 +4,7 @@ services:
     image: "calmera/todo-service:latest"
     ports:
       - "15000:5000"
-      - "18000:8080"
+      - "8080:8080"
     environment:
       confluent_api_key: ${confluent_api_key}
       confluent_api_secret: ${confluent_api_secret}
@@ -16,4 +16,3 @@ services:
       confluent_ksql_endpoint: ${confluent_ksql_endpoint}
       confluent_ksql_key: ${confluent_ksql_key}
       confluent_ksql_secret: ${confluent_ksql_secret}
-      spring.kafka.schema.registry.url: ${confluent_sr_endpoint}
