@@ -16,14 +16,14 @@ public class GlobalKafkaTodoReader extends AbstractKafkaReader implements TodoRe
     @Override
     public ListResponse<Todo> all() {
         return getKafkaStreams().metadataForAllStreamsClients().parallelStream()
-                .map(streamsMetadata -> String.format("http://%s:%d/todos", streamsMetadata.host(), streamsMetadata.port()))
+                .map(streamsMetadata -> String.format("http://%s:%d/todos?local=true", streamsMetadata.host(), streamsMetadata.port()))
                 .map(url -> {
                     RestTemplate template = new RestTemplate();
 
                     try {
                         return (ListResponse<Todo>) template.getForObject(url, ListResponse.class);
                     } catch (RestClientException rce) {
-                        return new ListResponse<Todo>(rce);
+                        return new ListResponse<Todo>(rce.getMessage());
                     }
                 }).reduce(new ListResponse<>(), (r1, r2) -> {
                     if (r1 == null) {

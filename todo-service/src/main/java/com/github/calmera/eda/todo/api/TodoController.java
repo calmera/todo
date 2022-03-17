@@ -4,6 +4,7 @@ import com.github.calmera.eda.todo.commands.CreateTodo;
 import com.github.calmera.eda.todo.logic.ListResponse;
 import com.github.calmera.eda.todo.logic.TodoReader;
 import com.github.calmera.eda.todo.state.Todo;
+import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import org.apache.avro.specific.SpecificRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class TodoController {
         try {
             kafkaTemplate.send("todos", cmd).get(10, TimeUnit.SECONDS);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

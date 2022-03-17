@@ -1,24 +1,25 @@
 package com.github.calmera.eda.todo.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListResponse<T> {
     private final List<T> items;
-    private final List<Throwable> errors;
+    private final List<String> errors;
 
     public ListResponse() {
-        this(List.of(), List.of());
+        this(new ArrayList<>(), new ArrayList<>());
     }
 
     public ListResponse(T... items) {
         this(List.of(items), List.of());
     }
 
-    public ListResponse(Throwable... errors) {
+    public ListResponse(String... errors) {
         this(List.of(), List.of(errors));
     }
 
-    public ListResponse(List<T> items, List<Throwable> errors) {
+    public ListResponse(List<T> items, List<String> errors) {
         this.items = items;
         this.errors = errors;
     }
@@ -27,7 +28,7 @@ public class ListResponse<T> {
         return items;
     }
 
-    public List<Throwable> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 

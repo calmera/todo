@@ -21,7 +21,7 @@ public class LocalKafkaTodoReader extends AbstractKafkaReader implements TodoRea
 
         getStore().all().forEachRemaining(kv -> {
             if (! (kv.value instanceof Todo)) {
-                result.getErrors().add(new IllegalStateException("the entry is not a todo but a " + kv.value.getClass().getName()));
+                result.getErrors().add("the entry is not a todo but a " + kv.value.getClass().getName());
                 return;
             }
 
