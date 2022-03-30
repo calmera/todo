@@ -3,6 +3,8 @@ package com.github.calmera.eda.todo.logic.kafka;
 import com.github.calmera.eda.todo.logic.ListResponse;
 import com.github.calmera.eda.todo.logic.TodoReader;
 import com.github.calmera.eda.todo.state.Todo;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KeyQueryMetadata;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,20 @@ public class GlobalKafkaTodoReader extends AbstractKafkaReader implements TodoRe
 
     public GlobalKafkaTodoReader(StreamsBuilderFactoryBean streamsBuilderFactoryBean) {
         super(streamsBuilderFactoryBean);
+    }
+
+    @Override
+    public Todo get(String key) {
+        KeyQueryMetadata md = getKafkaStreams().queryMetadataForKey("todos", key, Serdes.String().serializer());
+
+        String url = String.format("http://%s:%d/todos/%s?local=true", md.activeHost().host(), md.activeHost().port(), key);
+        RestTemplate template = new RestTemplate();
+
+        try {
+            return template.getForObject(url, Todo.class);
+        } catch (RestClientException rce) {
+            throw new IllegalStateException(rce);
+        }
     }
 
     @Override

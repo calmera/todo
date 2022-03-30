@@ -16,6 +16,11 @@ public class LocalKafkaTodoReader extends AbstractKafkaReader implements TodoRea
     }
 
     @Override
+    public Todo get(String key) {
+        return (Todo) getStore().get(key);
+    }
+
+    @Override
     public ListResponse<Todo> all() {
         ListResponse<Todo> result = new ListResponse<>();
 

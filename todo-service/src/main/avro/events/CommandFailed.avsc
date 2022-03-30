@@ -15,7 +15,8 @@
     },
     {
       "name": "preState",
-      "type": "com.github.calmera.eda.todo.state.Todo"
+      "type": ["null","com.github.calmera.eda.todo.state.Todo"],
+      "default": null
     },
     {
       "name": "error",
